@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Guess The Number</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(135deg, #0a0a0a, #1b0f1f);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        background: #0f0f14;
+        padding: 35px;
+        width: 340px;
+        border-radius: 18px;
+        box-shadow: 0 0 25px rgba(160, 60, 120, 0.35);
+        text-align: center;
+        border: 1px solid rgba(160, 60, 120, 0.4);
+    }
+
+    h1 {
+        color: #c06;
+        letter-spacing: 1px;
+        margin-bottom: 12px;
+    }
+
+    #rangeText {
+        font-size: 14px;
+        color: #aaa;
+        margin-bottom: 18px;
+    }
+
+    input {
+        width: 80%;
+        padding: 10px;
+        border-radius: 10px;
+        border: 1px solid #c06;
+        background: #000;
+        color: #eee;
+        font-size: 16px;
+        text-align: center;
+        outline: none;
+    }
+
+    button {
+        margin-top: 16px;
+        padding: 10px 26px;
+        border: none;
+        border-radius: 20px;
+        background: #c06;
+        color: #fff;
+        font-size: 15px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #a00455;
+    }
+
+    #message {
+        margin-top: 16px;
+        font-weight: bold;
+        color: #c06;
+        min-height: 20px;
+    }
+
+    #tries {
+        margin-top: 6px;
+        font-size: 13px;
+        color: #888;
+    }
+
+    #restartBtn {
+        display: none;
+        margin-top: 12px;
+        background: #444;
+    }
+
+    #restartBtn:hover {
+        background: #666;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Guess The Number</h1>
+    <p id="rangeText">Guess a number between <b>1 and 10</b></p>
+
+    <input type="number" id="guessInput">
+    <br>
+    <button onclick="checkGuess()" id="guessBtn">Guess</button>
+
+    <p id="message"></p>
+    <p id="tries"></p>
+
+    <button id="restartBtn" onclick="restartGame()">Restart</button>
+</div>
+
+<script>
+    let level = 1;
+    let min = 1;
+    let max = 10;
+    let secret = Math.floor(Math.random() * max) + min;
+    let attempts = 0;
+    const maxAttempts = 3;
+    let gameOver = false;
+
+    function checkGuess() {
+        if (gameOver) return;
+
+        let input = document.getElementById("guessInput").value;
+        let guess = Number(input);
+
+        if (input === "" || isNaN(guess) || guess < min || guess > max) {
+            document.getElementById("message").innerText =
+                "Invalid input! Enter a number between " + min + " and " + max;
+            return;
+        }
+
+        attempts++;
+
+        if (guess < secret) {
+            document.getElementById("message").innerText = "Too Low!";
+        }
+        else if (guess > secret) {
+            document.getElementById("message").innerText = "Too High!";
+        }
+        else {
+            if (level === 1) {
+                level = 2;
+                min = 1;
+                max = 25;
+                secret = Math.floor(Math.random() * max) + min;
+                attempts = 0;
+
+                document.getElementById("message").innerText =
+                    "Correct! Level 2 Unlocked!";
+                document.getElementById("rangeText").innerHTML =
+                    "Guess a number between <b>1 and 25</b>";
+                document.getElementById("tries").innerText = "";
+                return;
+            } else {
+                document.getElementById("message").innerText =
+                    "You Won the Game";
+                gameOver = true;
+                document.getElementById("restartBtn").style.display = "inline-block";
+                return;
+            }
+        }
+
+        document.getElementById("tries").innerText =
+            "Attempts: " + attempts + " / " + maxAttempts;
+
+        if (attempts === maxAttempts) {
+            document.getElementById("message").innerText =
+                "Game Over. Number was " + secret;
+            gameOver = true;
+            document.getElementById("restartBtn").style.display = "inline-block";
+        }
+    }
+
+    function restartGame() {
+        level = 1;
+        min = 1;
+        max = 10;
+        secret = Math.floor(Math.random() * max) + min;
+        attempts = 0;
+        gameOver = false;
+
+        document.getElementById("rangeText").innerHTML =
+            "Guess a number between <b>1 and 10</b>";
+        document.getElementById("message").innerText = "";
+        document.getElementById("tries").innerText = "";
+        document.getElementById("guessInput").value = "";
+        document.getElementById("restartBtn").style.display = "none";
+    }
+</script>
+
+</body>
+</html>
